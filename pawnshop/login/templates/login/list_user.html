@@ -1,0 +1,69 @@
+{% extends 'gentella_base/base.html' %}
+{% load role_tags %}
+
+
+{% block title %}{{user.company.name}}{% endblock title %}
+{% block section %}List of Users{% endblock section %}
+
+
+{% block pageTitle %}List of users{% endblock pageTitle %}
+    
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>List <small>of Users</small></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Roles</th>
+                        <th>Last Join</th>
+                        <th>Status</th>
+                        <th>Options</th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for worker in employees %}
+                            <tr>
+                                <td>{{ worker.person.get_full_name }}</td>
+                                <td>
+                                    
+                                    {% if worker|has_group:'Admin' %}
+                                        <li>Admin</li>
+                                    {% endif %}
+                                    {% if worker|has_group:'Employee' %}
+                                        <li>Employee</li>
+                                    {% endif %}    
+                                    
+                                </td>
+                                <td>{{ worker.last_login }}</td>
+                                <td>
+                                    {% if worker.is_active %}
+                                        Active
+                                    {% else %}
+                                        Inactive
+                                    {% endif %}
+                                </td>
+                                <td><a href="{% url 'login:profile' id=worker.id %}" class="btn btn-succes">Edit</a></td>
+                            </tr>
+                        {% endfor %}
+        
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
