@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Company, Person, User, Pledge, OtherContract, Box, Paid, RechargePersonalBox, PersonalBox, BlackList, VehicleInspection
+from .models import Company, Person, User, Pledge, OtherContract, Box, Paid, RechargePersonalBox, BlackList, VehicleInspection, IndividualBox, UserBox, CompanyBox
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
@@ -13,6 +13,25 @@ class PersonAdmin(admin.ModelAdmin):
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'is_staff', 'is_active', 'last_login')
     search_fields = ('username', 'email')
+
+@admin.register(IndividualBox)
+class IndividualBoxAdmin(admin.ModelAdmin):
+    list_display = ('id', 'in_week_amount', 'out_week_amount', 'week_amount', 'in_global_amount', 'out_global_amount', 'global_amount', 'start_date', 'end_date', 'created_at', 'updated_at')
+    search_fields = ('id',)
+    list_filter = ('start_date', 'end_date', 'created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(UserBox)
+class UserBoxAdmin(admin.ModelAdmin):
+    list_display = ('id', 'employee', 'individual_box')
+    search_fields = ('employee__username', 'individual_box__id')
+    list_filter = ('employee',)
+
+@admin.register(CompanyBox)
+class CompanyBoxAdmin(admin.ModelAdmin):
+    list_display = ('id', 'company', 'individual_box')
+    search_fields = ('company__name', 'individual_box__id')
+    list_filter = ('company',)
 
 @admin.register(Pledge)
 class PledgeAdmin(admin.ModelAdmin):
@@ -30,16 +49,12 @@ class BoxAdmin(admin.ModelAdmin):
 
 @admin.register(Paid)
 class PaidAdmin(admin.ModelAdmin):
-    list_display = ('pledge', 'type_paid', 'amount', 'created_at')
+    list_display = ('pledge', 'type_paid', 'box')
     list_filter = ('type_paid',)
 
 @admin.register(RechargePersonalBox)
 class RechargePersonalBoxAdmin(admin.ModelAdmin):
-    list_display = ('receiver', 'employee', 'amount', 'type', 'created_at')
-
-@admin.register(PersonalBox)
-class PersonalBoxAdmin(admin.ModelAdmin):
-    list_display = ('employee', 'in_week_amount', 'out_week_amount', 'week_amount', 'in_global_amount', 'out_global_amount', 'global_amount', 'created_at')
+    list_display = ('receiver', 'box')
 
 @admin.register(BlackList)
 class BlackListAdmin(admin.ModelAdmin):

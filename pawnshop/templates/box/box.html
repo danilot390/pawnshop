@@ -1,0 +1,158 @@
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}{{user.company.name}}{% endblock title %}
+{% block section %}Box{% endblock section %}
+
+
+{% block pageTitle %}Box{% endblock pageTitle %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock style %}
+{% block js %}
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="{% static 'js/tables.js' %}"></script>
+{% endblock js %}
+    
+{% block content %}
+<div class="row">
+        
+    <div class="col-md-12 col-sm-12">
+        <div class="col-md-6">
+            <h2>Personal Box</h2>
+            <ul>
+                <li>In week {{ personal_box.individual_box.in_week_amount }}</li>
+                <li>Out week {{ personal_box.individual_box.out_week_amount }}</li>
+                <li>Total week {{ personal_box.individual_box.week_amount }}</li>
+                <li>In global {{ personal_box.individual_box.in_global_amount }}</li>
+                <li>Out global {{ personal_box.individual_box.out_global_amount }}</li>
+                <li>Total global {{ personal_box.individual_box.global_amount }}</li>
+            </ul>
+        </div>   
+        
+        {% if company_box %}
+        <div class="col-md-6">
+            <h2>Company Box</h2>
+            <ul>
+                <li>In week {{ company_box.individual_box.in_week_amount }}</li>
+                <li>Out week {{ company_box.individual_box.out_week_amount }}</li>
+                <li>Total week {{ company_box.individual_box.week_amount }}</li>
+                <li>In global {{ company_box.individual_box.in_global_amount }}</li>
+                <li>Out global {{ company_box.individual_box.out_global_amount }}</li>
+                <li>Total global {{ company_box.individual_box.global_amount }}</li>
+            </ul>
+        </div> 
+        {% endif %}
+            
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+    <hr>
+    <a href="{% url 'box:recharge' %}" class="btn btn-success">Make recharge</a>
+    <a href="{% url 'box:expenses_box' %}" class="btn btn-info">Expenses</a>
+    <br>
+    </div>
+    
+</div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Box Movements<small>List</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                
+               <table id="boxTable" class="table table-striped col-md-12" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in box %}
+                    <tr>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.amount }}</td>
+                        <td>{{ item.employee.person.get_full_name }}</td>
+                        <td>{{ item.updated_at }}</td>
+                        <td><a href="" class="">Check</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <th>{{ total }}</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+               </table>
+               
+            </div>
+        </div>
+    </div> 
+</div>   
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Internal Movements<small>List</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                
+               <table id="boxTable1" class="table table-striped col-md-12" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Employee</th>
+                        <th>Receiver</th>
+                        <th>Date</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in internal_box %}
+                    <tr>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.amount }}</td>
+                        <td>{{ item.employee.person.get_full_name }}</td>
+                        <td>{{ item.recharge_personal_box.receiver.person.get_full_name }}</td>
+                        <td>{{ item.updated_at }}</td>
+                        <td><a href="" class="">Check</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+               </table>
+            </div>
+        </div>
+    </div> 
+</div>  
+{% endblock content %}
+    

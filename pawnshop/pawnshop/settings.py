@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     'login',
     'loan',
+    'box',
 ]
 
 MIDDLEWARE = [

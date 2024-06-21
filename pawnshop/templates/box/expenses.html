@@ -1,0 +1,45 @@
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}{{user.company.name}}{% endblock title %}
+{% block section %}Expenses{% endblock section %}
+
+
+{% block pageTitle %}Expenses{% endblock pageTitle %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+{% endblock style %}
+{% block js %}
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="{% static 'js/tables.js' %}"></script>
+{% endblock js %}
+    
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Expenses<small>List</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method='POST' action="{% url 'box:expenses_post' %}">
+                    {% csrf_token %}
+                    {% include "box/ind_box.html" %}  
+                     
+                    <button class="btn btn-success" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>    
+{% endblock content %}
+    

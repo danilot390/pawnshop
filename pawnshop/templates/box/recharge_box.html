@@ -1,0 +1,53 @@
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}{{user.company.name}}{% endblock title %}
+{% block section %}Rech-Box{% endblock section %}
+
+{% block pageTitle %}Re-Box{% endblock pageTitle %}
+    
+{% block content %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Recharge Box <small>New</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form class="form-horizontal form-label-left" method='POST' action="{% url 'box:recharge_post' %}">
+
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="id_receiver" class="control-label col-md-3">Receiver</label>
+                        <div class="col-md-7">
+                            <select name="receiver" id="id_receiver" class='form-control col-md-7' required>
+                                <option value="">Select one please...</option>
+                                {% for employee in employees %} 
+                                    <option value="{{employee.id}}">{{employee.person.get_full_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% include "box/ind_box.html" %}  
+                    <div class="form-group row">
+                        <label for="id_new" class="control-label col-md-3">New capital
+                        </label>
+                        <div class="col-md-7">
+                            <input type="checkbox" id="id_new" name="new" checked class="form-control col-md-7">
+                        </div>
+                    </div>                           
+                    <button class="btn btn-success" type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>    
+{% endblock content %}
+    

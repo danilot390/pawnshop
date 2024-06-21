@@ -91,19 +91,19 @@ class Box(models.Model):
         (OUTPUT, 'Output'),
     ]
 
-    company = models.ForeignKey("Company", on_delete=models.CASCADE, related_name='box')
+    company = models.ForeignKey("Company", on_delete=models.CASCADE, related_name='transactions')
     employee = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
         related_name='transactions'
     )
     amount = models.PositiveIntegerField()
-    type = models.CharField(max_length=3, choices=TYPE_TRANSACTION_CHOICES)
+    type = models.CharField(max_length=3, choices=TYPE_TRANSACTION_CHOICES, null=True, blank=True)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class Paid(Box):
+class Paid(models.Model):
     RESCUE = 'RS'
     RENEWAL = 'RN'
     PURCHASE = 'PC'
@@ -117,30 +117,56 @@ class Paid(Box):
         on_delete=models.CASCADE,
         related_name='paids'
     )
+    box = models.OneToOneField("Box", on_delete=models.CASCADE, related_name='paid_box')
     type_paid = models.CharField(max_length=2, choices=TYPE_OF_PAID)
 
-class RechargePersonalBox(Box):
+class RechargePersonalBox(models.Model):
+    box = models.OneToOneField("Box", on_delete=models.CASCADE, related_name='recharge_personal_box')
     receiver = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name='Recharges'
+        related_name='recharges'
     )
 
-class PersonalBox(models.Model):
-    id = models.AutoField(primary_key=True)
+class IndividualBox(models.Model):
+    in_week_amount = models.IntegerField(default=0)
+    out_week_amount = models.IntegerField(default=0)
+    week_amount = models.IntegerField(default=0)
+    in_global_amount = models.IntegerField(default=0)
+    out_global_amount = models.IntegerField(default=0)
+    global_amount = models.IntegerField(default=0)
+    start_date = models.DateField( auto_now=False, auto_now_add=False, blank=True, null=True)
+    end_date = models.DateField( auto_now=False, auto_now_add=False, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"IndividualBox {self.start_date}"
+    
+class UserBox(models.Model):
     employee = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
-        related_name='personal_boxes'
+        related_name='user_boxes',
     )
-    in_week_amount = models.PositiveIntegerField(default=0)
-    out_week_amount = models.PositiveIntegerField(default=0)
-    week_amount = models.PositiveIntegerField(default=0)
-    in_global_amount = models.PositiveIntegerField(default=0)
-    out_global_amount = models.PositiveIntegerField(default=0)
-    global_amount = models.PositiveIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    individual_box = models.OneToOneField("IndividualBox", 
+                                        on_delete=models.PROTECT,
+                                        related_name='user_box',
+                                        )
+    
+    def __str__(self):
+        return f"UserBox {self.employee.person.get_full_name()} for {self.individual_box}"
+    
+class CompanyBox(models.Model):
+    company = models.ForeignKey("Company", 
+                                on_delete=models.CASCADE,
+                                related_name='company_boxes',
+                                )
+    individual_box = models.OneToOneField("IndividualBox", 
+                                          on_delete=models.CASCADE,
+                                          related_name='company_box',
+                                          )
+    
 
 class BlackList(models.Model):
     id = models.AutoField(primary_key=True)
