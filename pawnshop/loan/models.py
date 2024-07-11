@@ -19,6 +19,8 @@ class Person(models.Model):
 
     def get_full_name(self):
         return self.name + ' ' + self.last_name
+    def __str__(self):
+        return self.ci +'-'+self.name + ' ' + self.last_name
 
 class User(AbstractUser):
     person = models.ForeignKey("Person", on_delete=models.PROTECT, related_name='user', null=True)
@@ -47,6 +49,7 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='pledges'
     )
+    image = models.ImageField( upload_to=None, height_field=None, width_field=None, max_length=None, null=True, blank=True)
     company = models.ForeignKey("Company", on_delete=models.CASCADE, related_name='pledges')
     article = models.CharField(max_length=50)
     type = models.CharField(max_length=30)
@@ -56,12 +59,18 @@ class Pledge(models.Model):
     renewal_date = models.DateField(null=True, blank=True)
     loan = models.PositiveIntegerField()
     interest = models.PositiveIntegerField()
+    balance = models.IntegerField(default=0)
     arrears = models.PositiveIntegerField(default=0)
     estimated_value = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.BooleanField()
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def loan_to_interest_ratio(self):
+        if self.interest != 0:
+            return round(self.balance / self.interest, 0)
+        return None 
+    
 class OtherContract(models.Model):
     id = models.AutoField(primary_key=True)
     BUY_SELL = 'BS'
@@ -173,7 +182,7 @@ class BlackList(models.Model):
     client = models.ForeignKey(
         'Person',
         on_delete=models.CASCADE,
-        related_name='blacklists'
+        related_name='blacklist'
     )
     company = models.ForeignKey("Company", on_delete=models.CASCADE, related_name='black_list')
     reason = models.TextField(blank=True)

@@ -1,11 +1,14 @@
 from django.core.management.base import BaseCommand
-
 from django.contrib.auth.models import Group
+from django.db import transaction
+
 from loan.models import *
+from box.views import *
 
 class Command(BaseCommand):
     help = 'Load initial data into the database'
-
+    
+    @transaction.atomic
     def handle(self, *args, **kwargs):
         #  Create Roles
         rol_admin = Group.objects.get_or_create(name='Admin')
@@ -49,7 +52,7 @@ class Command(BaseCommand):
             defaults={'slug' : slug,
                       'slang' : slang,}
         )
-        self.stdout.write(self.style.SUCCESS('Company get or created successfully'))
+        self.stdout.write(self.style.SUCCESS('Company get or created successfully'))\
 
         # Create or get a superuser
         username = 'admin'  

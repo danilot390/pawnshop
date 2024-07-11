@@ -12,4 +12,12 @@ class Command(BaseCommand):
         Box.objects.filter().delete()
         IndividualBox.objects.filter().delete()
         RechargePersonalBox.objects.filter().delete()
+        Pledge.objects.filter().delete()
+        
+        self.stdout.write(self.style.SUCCESS('The UserBox table it was clean successfull.'))
+        self.stdout.write(self.style.SUCCESS('The CompanyBox table it was clean successfull.'))
+        self.stdout.write(self.style.SUCCESS('The Box table it was clean successfull.'))
+        self.stdout.write(self.style.SUCCESS('The IndividualBox table it was clean successfull.'))
+        self.stdout.write(self.style.SUCCESS('The RechargePersonalBox table it was clean successfull.'))
+        self.stdout.write(self.style.SUCCESS('The Pledge table it was clean successfull.'))
       

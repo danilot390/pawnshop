@@ -1,0 +1,58 @@
+{% if company_box_ %}
+<div class="row" style="display: inline-block;" >
+    <div class="tile_count">
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">In Co's Week's</span>
+        <div class="count">{{company_box_.in_week_amount}}</div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top"> Out Co's Week</span>
+        <div class="count"> {{company_box_.out_week_amount }} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">Co's Week</span>
+        <div class="{% if company_box_.week_amount > 0 %}count green{% else %}count red{% endif %}"> {{company_box_.week_amount}} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">In Co's Global</span>
+        <div class="count"> {{company_box_.in_global_amount }} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top"> Out Co's Global</span>
+        <div class="count"> {{company_box_.out_global_amount}} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">Co's Global</span>
+        <div class="{% if company_box_.global_amount > 0 %}count green{% else %}count red{% endif %}">{{company_box_.global_amount}}</div>
+      </div>
+    </div>
+</div>
+{% endif %}
+<div class="row" style="display: inline-block;" >
+    <div class="tile_count">
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">In Us's Week's</span>
+        <div class="count">{{us_box_.in_week_amount}}</div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top"> Out Us's Week</span>
+        <div class="count"> {{us_box_.out_week_amount }} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">Us's Week</span>
+        <div class="{% if us_box_.week_amount > 0 %}count green{% else %}count red{% endif %}"> {{us_box_.week_amount}} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">In Us's Global</span>
+        <div class="count"> {{us_box_.in_global_amount }} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top"> Out Us's Global</span>
+        <div class="count"> {{us_box_.out_global_amount}} </div>
+      </div>
+      <div class="col-md-2 col-sm-4  tile_stats_count">
+        <span class="count_top">Us's Global</span>
+        <div class="{% if us_box_.global_amount > 0 %}count green{% else %}count red{% endif %}">{{us_box_.global_amount}}</div>
+      </div>
+    </div>
+</div>

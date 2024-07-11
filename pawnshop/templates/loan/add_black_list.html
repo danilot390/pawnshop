@@ -1,0 +1,51 @@
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}Add BlackList{% endblock title %}
+{% block section %}{% endblock section %}
+
+
+{% block pageTitle %}Black List{% endblock pageTitle %}
+
+{% block style %}
+<!-- Select2 -->
+<link href="{% static 'vendors/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+{% endblock style %}
+{% block js %}
+<script src="{% static 'vendors/select2/dist/js/select2.full.min.js' %}"></script>
+{% endblock js %}
+    
+{% block content %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Black List<small>New</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form action="{% url 'loan:add_black_list' %}" method="POST" class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                    {% for field in black_list_form %}
+                        <div class="form-group row">
+                            <label for="{{field.id_for_label}}" class="control-label col-md-3">{{field.label_tag}} </label>
+                            <div class="col-md-7">
+                                {{field}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <button class="btn btn-success" type="submit">Register</button>
+                </form>
+            </div>
+        </div>
+    </div> 
+</div>
+ 
+{% endblock content %}
+    

@@ -1,0 +1,99 @@
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}Loan|{{user.company.name}}{% endblock title %}
+{% block section %}{% endblock section %}
+
+
+{% block pageTitle %}Loan Detail{% endblock pageTitle %}
+
+{% block style %}
+{% endblock style %}
+{% block js %}
+{% endblock js %}
+    
+{% block content %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Loan<small>Detail</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Article:</th>
+                            <td>{{ loan.article }} </td>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Client:</th>
+                            <td>{{ loan.client.get_full_name }}</td>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Description:</th>
+                            <td>{{ loan.description }} </td>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Rescue Date:</th>
+                            <td>{{loan.rescue_date}} </td>
+                            <th></th>
+                        </tr>
+                        {% if loan.renewal_date %}
+                            <th>Renewal Date:</th>
+                            <td> {{loan.renewal_date}}</td>
+                            <th></th>
+                        {% endif %}
+                        <tr>
+                            <th>Loan:</th>
+                            <td>{{loan.loan}} </td>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Balance:</th>
+                            <td>{{loan.balance}} </td>  
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Renewal Amount:</th>
+                            <td>{{loan.loan_to_interest_ratio}} </td>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <th>Estimated Value:</th>
+                            <td>{{loan.estimated_value}} </td>
+                            <th></th>
+                        </tr>
+                    </tbody>
+                </table>  
+                <a class="btn btn-info" href="{% url 'loan:loan_paid' id=loan.id %}">Paid</a>                  
+                <a class="btn btn-success" href="{% url 'loan:loan_renewal' id=loan.id %}">Renewal</a>
+                <hr>
+                <form class="form-horizontal" action="{% url 'loan:article_purchase' id=loan.id %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label for="{{ field.id_for_label }}" class="control-label col-md-3">Price:</label>
+                        <div class="col-md-7">
+                            <input type="text" class="form-control col-md-7" value="{{loan.estimated_value}}" name="purchase">
+                        </div>
+                    </div>
+                    <button class="btn btn-success" type="submit">Sell</button>
+                </form>
+
+            </div>
+        </div>
+    </div> 
+</div>
+ 
+{% endblock content %}
+    

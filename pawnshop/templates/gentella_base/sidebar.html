@@ -8,7 +8,11 @@
         <li><a href="{% url 'login:list_users' %}"><i class="fa fa-list"></i> List Users </a></li>
       {% endif %}
       <li><a href="{% url 'box:box' %}"><i class="fa fa-list"></i> Box </a></li>
+      <li><a href="{% url 'loan:loan' %}"><i class="fa fa-list"></i> Loan </a></li>
+      <li><a href="{% url 'loan:list_loans' %}"><i class="fa fa-list"></i> List of Loans </a></li>
+      <li><a href="{% url 'loan:list_havings' %}">List of Havings</a></li>
       <li><a href="{% url 'box:expenses_box' %}"><i class="fa fa-list"></i> Expenses </a></li>
+      <li><a href="{% url 'loan:black_list' %}">Black List</a></li>
     </ul>
     
   </div>

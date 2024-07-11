@@ -1,0 +1,72 @@
+
+{% extends 'gentella_base/base.html' %}
+{% load static %}
+{% load role_tags %}
+
+{% block title %}{{user.company.name}}'s loans{% endblock title %}
+{% block section %}{% endblock section %}
+
+
+{% block pageTitle %}List of loans{% endblock pageTitle %}
+
+{% block style %}
+{% endblock style %}
+{% block js %}
+{% endblock js %}
+    
+{% block content %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Loans<small>Pendients</small></h2>
+                
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table id="table" class="table ">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Article</th>
+                            <th>Rescue Date</th>
+                            <th>Balance</th>
+                            <th>Arrears</th>
+                            <th>Details</th>    
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        
+                        {% for loan in list_loans %}
+                            <tr>
+                                <td>{{loan.client.get_full_name}} </td>
+                                <td> {{loan.article}} </td>
+                                <td> 
+                                {% if loan.renewal_date %}
+                                    {{loan.renewal_date}} (R)
+                                {% else %}
+                                    {{loan.rescue_date}} 
+                                {% endif %}
+                                    </td>
+                                <td> {{loan.loan}} </td>
+                                <td> {{loan.arrears}} </td>
+                                <td>
+                                    <a href="{% url 'loan:loan_detail' id=loan.id %}">Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                            
+                    </tbody>
+                </table>     
+            </div>
+        </div>
+    </div> 
+</div>
+ 
+{% endblock content %}
+    
