@@ -1,15 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.utils import timezone
 from django.db import transaction
 from django.db.models import Sum, Case, When, IntegerField
 
 from box.forms import RechargeBoxForm, BoxForm
-from loan.models import UserBox, CompanyBox, IndividualBox, Box, RechargePersonalBox
-
-from datetime import timedelta
-
+from box.utils import check_individual_box, box_out, box_in, boxes, register_expense
+from loan.models import Box
 
 @login_required(login_url='login:logg')
 def box_view(request):
@@ -58,89 +55,6 @@ def recharge_box(request):
     }
     return render(request, 'box/recharge_box.html', context)
 
-def create_individual_box(start_date, end_date):
-    return IndividualBox.objects.create(
-        start_date = start_date,
-        end_date = end_date,
-    )
-
-def create_user_box(us,start_date, end_date):
-    individual_box = create_individual_box(
-        start_date=start_date, 
-        end_date=end_date
-        )
-    return UserBox.objects.create(
-        employee = us,
-        individual_box = individual_box,
-    )
-
-def create_company_box(company,start_date, end_date):
-    individual_box = create_individual_box(
-        start_date, 
-        end_date
-        )
-    return CompanyBox.objects.create(
-        company = company,
-        individual_box = individual_box
-    )
-def get_current_week():
-    current_day = timezone.now().date()
-    start_date = current_day - timedelta(days=current_day.weekday())
-    end_date = start_date + timedelta(days=6)
-
-    return start_date, end_date
-
-def check_individual_box(us, box, type):
-
-    start_date, end_date = get_current_week()
-
-    if box is None or box.individual_box.start_date != start_date:
-        in_global_amount = box.individual_box.in_global_amount if box else 0
-        out_global_amount = box.individual_box.out_global_amount if box else 0
-        global_amount = box.individual_box.global_amount if box else 0
-
-        if type == 'us':
-            box = create_user_box(us=us, start_date=start_date, end_date=end_date)
-        elif type == 'company':
-            box = create_company_box(company=us.company, start_date=start_date, end_date=end_date)
-        
-        box.individual_box.in_global_amount = in_global_amount
-        box.individual_box.out_global_amount = out_global_amount
-        box.individual_box.global_amount = global_amount
-        box.individual_box.save()
-
-    return box
-
-def box_out(box, amount):
-    box.out_week_amount += amount
-    box.week_amount -= amount
-    box.out_global_amount += amount
-    box.global_amount -= amount
-    box.save()
-
-def box_in(box, amount):
-    box.in_week_amount += amount
-    box.week_amount += amount
-    box.in_global_amount += amount
-    box.global_amount += amount
-    box.save()
-
-def boxes(us, receiver, amount, transaction):
-    receiver_box = receiver.user_boxes.last()
-    receiver_box = check_individual_box(receiver, receiver_box, 'us')
-    
-    if transaction == 'move':
-        us_box = us.user_boxes.last()
-        us_box = check_individual_box(us, us_box, 'us')
-        box_out(us_box.individual_box, amount)
-    elif transaction == 'in':
-        company_box = us.company.company_boxes.last()
-        company_box = check_individual_box(us,company_box, 'company')
-        box_in(company_box.individual_box, amount)
-    
-    box_in(receiver_box.individual_box, amount)
-    pass
-
 @login_required(login_url='login:logg')
 @transaction.atomic
 def recharge_box_post(request):
@@ -177,19 +91,11 @@ def recharge_box_post(request):
     
     messages.error(request, "Something went wrong. Please try again.")
     return redirect("box:recharge")
-            
+
+@login_required(login_url='login:logg')            
 def expenses_box_view(request):
     context = {} 
     return render(request, 'box/expenses.html', context)
-
-def register_expense(us, amount):
-    personal_box = us.user_boxes.last()
-    personal_box = check_individual_box(us, personal_box, 'us')
-    company_box = us.company.company_boxes.last()
-    company_box = check_individual_box(us.company, company_box, 'company')
-
-    box_out(company_box.individual_box, amount)
-    box_out(personal_box.individual_box, amount)
 
 @login_required(login_url='login:logg')
 @transaction.atomic
@@ -211,6 +117,7 @@ def expenses_box_post(request):
     messages.error(request, "Failed to register expense. Please try again.")
     return redirect("box:expenses_box")
 
+@transaction.atomic
 def delete_box(request, id):
     """View to delted a box."""
     box = get_object_or_404(Box, id=id)

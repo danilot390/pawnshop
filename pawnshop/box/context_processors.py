@@ -1,4 +1,4 @@
-from box.views import create_company_box, create_user_box, get_current_week
+from box.utils import create_company_box, create_user_box, get_current_week
 
 def box_information(request):
     """
