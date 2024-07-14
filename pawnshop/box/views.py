@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
@@ -83,11 +83,16 @@ def create_company_box(company,start_date, end_date):
         company = company,
         individual_box = individual_box
     )
-
-def check_individual_box(us, box, type):
+def get_current_week():
     current_day = timezone.now().date()
     start_date = current_day - timedelta(days=current_day.weekday())
     end_date = start_date + timedelta(days=6)
+
+    return start_date, end_date
+
+def check_individual_box(us, box, type):
+
+    start_date, end_date = get_current_week()
 
     if box is None or box.individual_box.start_date != start_date:
         in_global_amount = box.individual_box.in_global_amount if box else 0
@@ -205,3 +210,26 @@ def expenses_box_post(request):
         
     messages.error(request, "Failed to register expense. Please try again.")
     return redirect("box:expenses_box")
+
+def delete_box(request, id):
+    """View to delted a box."""
+    box = get_object_or_404(Box, id=id)
+    amount = box.amount
+    user = box.employee
+    user_box = check_individual_box(user, user.user_boxes.last(), 'us')
+    company_box = check_individual_box(user, user.company.company_boxes.last(), 'company')
+    if box.type == 'OUT':
+        box_in(user_box.individual_box, amount)
+        box_in(company_box.individual_box, amount)
+    elif box.type == 'IN':
+        box_out(user_box.individual_box, amount)
+        box_out(company_box.individual_box, amount)
+    else:
+        recharge=box.recharge_personal_box
+        receiver=recharge.receiver
+        receiver_box=check_individual_box(receiver, receiver.user_boxes.last(),'us')
+        box_in(user_box.individual_box, amount)
+        box_out(receiver_box.individual_box, amount)
+    box.delete()
+
+    return redirect('box:box')

@@ -18,37 +18,6 @@
     
 {% block content %}
 <div class="row">
-        
-    <div class="col-md-12 col-sm-12">
-        <div class="col-md-6">
-            <h2>Personal Box</h2>
-            <ul>
-                <li>In week {{ personal_box.individual_box.in_week_amount }}</li>
-                <li>Out week {{ personal_box.individual_box.out_week_amount }}</li>
-                <li>Total week {{ personal_box.individual_box.week_amount }}</li>
-                <li>In global {{ personal_box.individual_box.in_global_amount }}</li>
-                <li>Out global {{ personal_box.individual_box.out_global_amount }}</li>
-                <li>Total global {{ personal_box.individual_box.global_amount }}</li>
-            </ul>
-        </div>   
-        
-        {% if company_box %}
-        <div class="col-md-6">
-            <h2>Company Box</h2>
-            <ul>
-                <li>In week {{ company_box.individual_box.in_week_amount }}</li>
-                <li>Out week {{ company_box.individual_box.out_week_amount }}</li>
-                <li>Total week {{ company_box.individual_box.week_amount }}</li>
-                <li>In global {{ company_box.individual_box.in_global_amount }}</li>
-                <li>Out global {{ company_box.individual_box.out_global_amount }}</li>
-                <li>Total global {{ company_box.individual_box.global_amount }}</li>
-            </ul>
-        </div> 
-        {% endif %}
-            
-    </div>
-</div>
-<div class="row">
     <div class="col-md-12">
     <hr>
     <a href="{% url 'box:recharge' %}" class="btn btn-success">Make recharge</a>
@@ -90,7 +59,7 @@
                         <td>{{ item.amount }}</td>
                         <td>{{ item.employee.person.get_full_name }}</td>
                         <td>{{ item.updated_at }}</td>
-                        <td><a href="" class="">Check</a></td>
+                        <td><a href="{% url 'box:delete_box' id=item.id %}" class="btn btn-small btn-danger">- X -</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -145,7 +114,7 @@
                         <td>{{ item.employee.person.get_full_name }}</td>
                         <td>{{ item.recharge_personal_box.receiver.person.get_full_name }}</td>
                         <td>{{ item.updated_at }}</td>
-                        <td><a href="" class="">Check</a></td>
+                        <td><a href="{% url 'box:delete_box' id=item.id %}" class="btn btn-small btn-danger">- X -</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -8,5 +8,6 @@ urlpatterns = [
     path('recharge', recharge_box, name='recharge'),
     path('recharge_p', recharge_box_post, name='recharge_post'),
     path('expenses_box', expenses_box_view, name='expenses_box'),
-    path('expenses_p', expenses_box_post, name='expenses_post')
+    path('expenses_p', expenses_box_post, name='expenses_post'),
+    path('delete_box/<id>', delete_box, name='delete_box'),
 ]

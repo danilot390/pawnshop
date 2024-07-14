@@ -2,7 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class Company(models.Model):
-    id = models.AutoField(primary_key=True)
+    owner = models.OneToOneField(
+        'Person',
+        on_delete=models.CASCADE,
+        related_name='owner'
+    )
     name = models.CharField( max_length=100)
     slug = models.CharField( max_length=10)
     slang = models.CharField(max_length=50)
@@ -192,14 +196,22 @@ class BlackList(models.Model):
 
 class VehicleInspection(models.Model):
     id = models.AutoField(primary_key=True)
-    pledge = models.ForeignKey(
+    pledge = models.OneToOneField(
         'Pledge',
         on_delete=models.CASCADE,
-        related_name='inspections'
+        related_name='inspection'
     )
+    notary = models.CharField(max_length=250)
+    clase = models.CharField(max_length=80)
+    color = models.CharField( max_length=50)
+    model = models.CharField(max_length=50)
+    marca = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
     plate = models.CharField(max_length=50)
     chassis = models.CharField(max_length=50)
     motor = models.CharField(max_length=50)
+    import_policy = models.CharField(max_length=30)
+    date_policy = models.DateField(auto_now=False, auto_now_add=False)
     motor_status = models.TextField()
     bodywork_status = models.TextField()
     taxes = models.DecimalField(max_digits=15, decimal_places=2)
