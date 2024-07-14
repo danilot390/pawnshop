@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'login',
     'loan',
     'box',
+    'mydocuments',
 ]
 
 MIDDLEWARE = [

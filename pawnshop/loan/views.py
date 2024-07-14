@@ -143,7 +143,7 @@ def save_contracts(request, id):
         elif debt_rec_form.is_valid():
             debt_rec_form.save()
         messages.success(request,'Contracts save successfully.')
-        return redirect('box:box')
+        return redirect('loan:loan_detail', id=id)
     else:
         messages.error(request, 'There was an error saving the contracts.')
         return redirect('loan:loan')
@@ -168,7 +168,6 @@ def check_person_post(request):
         if person is not None:
             return loan_reg_view(request, person)
         return redirect('loan:person', ci=ci)
-
 
 @login_required(login_url='login:logg')
 def list_loans(request):

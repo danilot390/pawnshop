@@ -21,4 +21,6 @@ urlpatterns = [
     path('',include('login.urls')),
     path('box/',include('box.urls')),
     path('loan/', include('loan.urls')),
+    path('pdf/', include('mydocuments.urls')),
+
 ]

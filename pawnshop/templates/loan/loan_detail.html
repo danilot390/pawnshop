@@ -11,10 +11,17 @@
 {% block style %}
 {% endblock style %}
 {% block js %}
+<script>
+    function openPdfWindows(){
+        window.open("{% url 'mydocuments:contract_pdf' id=loan.id %}", '_blank');
+        
+    }
+</script>
 {% endblock js %}
     
 {% block content %}
 <div class="row">
+    
     <div class="col-md-12 col-sm-12 ">
         <div class="x_panel">
             <div class="x_title">
@@ -78,6 +85,7 @@
                 </table>  
                 <a class="btn btn-info" href="{% url 'loan:loan_paid' id=loan.id %}">Paid</a>                  
                 <a class="btn btn-success" href="{% url 'loan:loan_renewal' id=loan.id %}">Renewal</a>
+                <button class="btn btn-danger" onclick="openPdfWindows()">Contracts</button>
                 <hr>
                 <form class="form-horizontal" action="{% url 'loan:article_purchase' id=loan.id %}" method="POST">
                     {% csrf_token %}
