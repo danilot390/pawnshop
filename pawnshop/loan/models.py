@@ -201,7 +201,6 @@ class VehicleInspection(models.Model):
         on_delete=models.CASCADE,
         related_name='inspection'
     )
-    notary = models.CharField(max_length=250)
     clase = models.CharField(max_length=80)
     color = models.CharField( max_length=50)
     model = models.CharField(max_length=50)
@@ -210,8 +209,7 @@ class VehicleInspection(models.Model):
     plate = models.CharField(max_length=50)
     chassis = models.CharField(max_length=50)
     motor = models.CharField(max_length=50)
-    import_policy = models.CharField(max_length=30)
-    date_policy = models.DateField(auto_now=False, auto_now_add=False)
+    crpva = models.CharField(max_length=30)
     motor_status = models.TextField()
     bodywork_status = models.TextField()
     taxes = models.DecimalField(max_digits=15, decimal_places=2)

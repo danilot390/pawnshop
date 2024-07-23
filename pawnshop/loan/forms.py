@@ -154,6 +154,12 @@ class VehicleInspectionForm(forms.ModelForm):
         model = VehicleInspection
         fields = [
             'plate',
+            'crpva',
+            'clase',
+            'color',
+            'model',
+            'marca',
+            'type',
             'chassis',
             'motor',
             'motor_status',
@@ -165,6 +171,30 @@ class VehicleInspectionForm(forms.ModelForm):
             'plate':forms.TextInput(attrs={
                 'class':'form-control col-md-7',
                 'required':'required'
+            }),
+            'crpva':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
+            }),
+            'clase':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
+            }),
+            'color':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
+            }),
+            'model':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
+            }),
+            'marca':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
+            }),
+            'type':forms.TextInput(attrs={
+                'class':'form-control col-md-7',
+                'required':'required',
             }),
             'chassis':forms.TextInput(attrs={
                 'class':'form-control col-md-7',

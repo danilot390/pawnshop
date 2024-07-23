@@ -2,8 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from loan.models import UserBox, CompanyBox, IndividualBox
 
-def get_current_week():
-    current_day = timezone.now().date()
+def get_current_week(current_day = timezone.now().date()):
     start_date = current_day - timedelta(days=current_day.weekday())
     end_date = start_date + timedelta(days=6)
 

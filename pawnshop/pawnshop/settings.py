@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'danielt390.pythonanywhere.com',
+    '127.0.0.1',
 ]
 
 AUTH_USER_MODEL = "loan.User"

@@ -5,7 +5,7 @@ from django.db import transaction
 from django.db.models import Sum, Case, When, IntegerField
 
 from box.forms import RechargeBoxForm, BoxForm
-from box.utils import check_individual_box, box_out, box_in, boxes, register_expense
+from box.utils import check_individual_box, box_out, box_in, boxes, register_expense, get_current_week
 from loan.models import Box
 
 @login_required(login_url='login:logg')
@@ -123,20 +123,28 @@ def delete_box(request, id):
     box = get_object_or_404(Box, id=id)
     amount = box.amount
     user = box.employee
-    user_box = check_individual_box(user, user.user_boxes.last(), 'us')
-    company_box = check_individual_box(user, user.company.company_boxes.last(), 'company')
+    start_week_box, _ = get_current_week(current_day=box.created_at)
+    user_boxes = user.user_boxes.filter(individual_box__created_at__gte=start_week_box)
+    company_boxes = user.company.company_boxes.filter(individual_box__created_at__gte=start_week_box)
     if box.type == 'OUT':
-        box_in(user_box.individual_box, amount)
-        box_in(company_box.individual_box, amount)
+        for user_box in user_boxes:
+            box_in(user_box.individual_box, amount)
+        for company_box in company_boxes:
+            box_in(company_box.individual_box, amount)
     elif box.type == 'IN':
-        box_out(user_box.individual_box, amount)
-        box_out(company_box.individual_box, amount)
+        for user_box in user_boxes:
+            box_out(user_box.individual_box, amount)
+        for company_box in company_boxes:
+            box_out(company_box.individual_box, amount)
     else:
         recharge=box.recharge_personal_box
         receiver=recharge.receiver
-        receiver_box=check_individual_box(receiver, receiver.user_boxes.last(),'us')
-        box_in(user_box.individual_box, amount)
-        box_out(receiver_box.individual_box, amount)
+        receiver_boxes = receiver.user_boxes.filter(individual_box__created_at__gte=start_week_box)
+        for receiver_box in receiver_boxes:
+            box_out(receiver_box.individual_box, amount)
+        for user_box in user_boxes:
+            box_in(user_box.individual_box, amount)
+        
     box.delete()
 
     return redirect('box:box')

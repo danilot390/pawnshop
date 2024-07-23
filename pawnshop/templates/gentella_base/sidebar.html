@@ -5,14 +5,14 @@
     <ul class="nav side-menu">
       {% if request.user|has_group:'Admin' %}
         <li><a href="{% url 'login:create_new_user' %}"><i class="fa fa-user"></i> New User </a></li>
-        <li><a href="{% url 'login:list_users' %}"><i class="fa fa-list"></i> List Users </a></li>
+        <li><a href="{% url 'login:list_users' %}"><i class="fa fa-users"></i> List Users </a></li>
       {% endif %}
-      <li><a href="{% url 'box:box' %}"><i class="fa fa-list"></i> Box </a></li>
-      <li><a href="{% url 'loan:loan' %}"><i class="fa fa-list"></i> Loan </a></li>
+      <li><a href="{% url 'box:box' %}"><i class="glyphicon glyphicon-euro"></i> Box </a></li>
+      <li><a href="{% url 'loan:loan' %}"><i class="glyphicon glyphicon-inbox"></i> Loan </a></li>
       <li><a href="{% url 'loan:list_loans' %}"><i class="fa fa-list"></i> List of Loans </a></li>
-      <li><a href="{% url 'loan:list_havings' %}">List of Havings</a></li>
-      <li><a href="{% url 'box:expenses_box' %}"><i class="fa fa-list"></i> Expenses </a></li>
-      <li><a href="{% url 'loan:black_list' %}">Black List</a></li>
+      <li><a href="{% url 'loan:list_havings' %}"><i class="glyphicon glyphicon-book"></i> List of Havings</a></li>
+      <li><a href="{% url 'box:expenses_box' %}"><i class="glyphicon glyphicon-sort-by-attributes-alt"></i> Expenses </a></li>
+      <li><a href="{% url 'loan:black_list' %}"><i class="fa fa-file"></i>Black List</a></li>
     </ul>
     
   </div>
