@@ -30,3 +30,31 @@ media/
 *.my_pgpass
 settings.py
 initial_credentials.py
+build/
+vendors/
+
+# Static files useful for the Gentelella Template
+# login
+!vendors/font-awesome/css/font-awesome.min.css
+!vendors/nprogress/nprogress.css
+!vendors/animate.css/animate.min.css
+!vendors/pnotify/dist/pnotify.css
+!vendors/pnotify/dist/pnotify.buttons.css
+!vendors/pnotify/dist/pnotify.nonblock.css
+!build/css/custom.min.css
+!vendors/pnotify/dist/pnotify.js
+!vendors/pnotify/dist/pnotify.buttons.js
+!vendors/pnotify/dist/pnotify.nonblock.js
+!vendors/switchery/dist/switchery.min.css
+!vendors/iCheck/icheck.min.js            
+!vendors/switchery/dist/switchery.min.js 
+# base
+!vendors/font-awesome/css/font-awesome.min.css
+!vendors/nprogress/nprogress.css              
+!build/css/custom.min.css                     
+!vendors/fastclick/lib/fastclick.js           
+!vendors/nprogress/nprogress.js               
+!build/js/custom.min.js      
+# others
+!vendors/select2/dist/css/select2.min.css
+!vendors/select2/dist/js/select2.full.min.js
