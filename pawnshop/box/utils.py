@@ -1,6 +1,7 @@
 from datetime import timedelta
 from django.utils import timezone
 from loan.models import UserBox, CompanyBox, IndividualBox
+from django.db.transaction import atomic
 
 def get_current_week(current_day = timezone.now().date()):
     start_date = current_day - timedelta(days=current_day.weekday())
@@ -55,18 +56,35 @@ def check_individual_box(us, box, type):
 
     return box
 
+def update_box_amounts(box, amount):
+    box.global_amount += amount
+    box.week_amount += amount
+
+@atomic
 def box_out(box, amount):
+    update_box_amounts(box, -amount)
     box.out_week_amount += amount
-    box.week_amount -= amount
     box.out_global_amount += amount
-    box.global_amount -= amount
     box.save()
 
 def box_in(box, amount):
+    update_box_amounts(box, amount)
     box.in_week_amount += amount
-    box.week_amount += amount
     box.in_global_amount += amount
-    box.global_amount += amount
+    box.save()
+
+@atomic
+def box_out_delete(box, amount):
+    update_box_amounts(box, amount)
+    box.out_week_amount -= amount
+    box.out_global_amount -= amount
+    box.save()
+
+@atomic
+def box_in_delete(box, amount):
+    update_box_amounts(box, -amount)
+    box.in_week_amount -= amount
+    box.in_global_amount -= amount
     box.save()
 
 def boxes(us, receiver, amount, transaction):
@@ -93,3 +111,19 @@ def register_expense(us, amount):
     box_out(company_box.individual_box, amount)
     box_out(personal_box.individual_box, amount)
 
+@atomic
+def process_boxes(boxes, amount, is_out=True, is_delete=True):
+    for i, box in enumerate(boxes):
+        current_box = box.individual_box
+        if i==0:
+            if is_delete:
+                if is_out:
+                    box_out_delete(current_box, amount)
+                else:
+                    box_in_delete(current_box,amount)
+            else:
+                update_box_amounts(current_box, amount if is_out else -amount)
+        else:
+            update_box_amounts(current_box, amount if is_out else -amount)
+        current_box.save()
+        

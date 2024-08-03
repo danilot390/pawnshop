@@ -5,7 +5,7 @@ from django.db import transaction
 from django.db.models import Sum, Case, When, IntegerField
 
 from box.forms import RechargeBoxForm, BoxForm
-from box.utils import check_individual_box, box_out, box_in, boxes, register_expense, get_current_week
+from box.utils import check_individual_box, process_boxes, box_in_delete, box_out_delete, box_out, box_in, boxes, register_expense, get_current_week
 from loan.models import Box
 
 @login_required(login_url='login:logg')
@@ -124,27 +124,25 @@ def delete_box(request, id):
     amount = box.amount
     user = box.employee
     start_week_box, _ = get_current_week(current_day=box.created_at)
+    
     user_boxes = user.user_boxes.filter(individual_box__created_at__gte=start_week_box)
     company_boxes = user.company.company_boxes.filter(individual_box__created_at__gte=start_week_box)
+    
     if box.type == 'OUT':
-        for user_box in user_boxes:
-            box_in(user_box.individual_box, amount)
-        for company_box in company_boxes:
-            box_in(company_box.individual_box, amount)
+        process_boxes(user_boxes, amount)
+        process_boxes(company_boxes, amount)
+
     elif box.type == 'IN':
-        for user_box in user_boxes:
-            box_out(user_box.individual_box, amount)
-        for company_box in company_boxes:
-            box_out(company_box.individual_box, amount)
+        process_boxes(user_boxes, amount, is_out=False)
+        process_boxes(company_boxes, amount, is_out=False)
     else:
         recharge=box.recharge_personal_box
         receiver=recharge.receiver
         receiver_boxes = receiver.user_boxes.filter(individual_box__created_at__gte=start_week_box)
-        for receiver_box in receiver_boxes:
-            box_out(receiver_box.individual_box, amount)
-        for user_box in user_boxes:
-            box_in(user_box.individual_box, amount)
         
+        process_boxes(receiver_boxes, amount, is_out=False)
+        process_boxes(user_boxes, amount)
+
     box.delete()
 
     return redirect('box:box')
