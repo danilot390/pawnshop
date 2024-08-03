@@ -77,26 +77,29 @@ def loan_post(request, id_person):
         if pledge_form.is_valid() and person_form.is_valid():
 
             person = person_form.save()
+            
             new_pledge = pledge_form.save(commit=False)
             new_pledge.client = person
             new_pledge.employee = user
             new_pledge.company = company
             new_pledge.balance = new_pledge.loan
-            new_pledge.save()
-
+            
             amount_out = new_pledge.balance*((100 - new_pledge.interest)/100)
             user_box = check_individual_box(user, user.user_boxes.last(), 'us')
             company_box = check_individual_box(user, company.company_boxes.last(), 'company')
             box_out(user_box.individual_box, amount_out)
             box_out(company_box.individual_box, amount_out)
 
-            Box.objects.create(
+            box = Box.objects.create(
                 company = company,
                 employee = user,
                 amount = amount_out,
                 type = 'OUT',
                 description = f'Loan for {new_pledge.loan} - {new_pledge.client.get_full_name()}',
             )
+
+            new_pledge.box = box
+            new_pledge.save()
 
             return other_contracts(request, new_pledge)
             

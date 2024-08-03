@@ -53,6 +53,11 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='pledges'
     )
+    box = models.OneToOneField(
+        "Box",
+        on_delete=models.CASCADE,
+        related_name='box',    
+    )
     image = models.ImageField( upload_to=None, height_field=None, width_field=None, max_length=None, null=True, blank=True)
     company = models.ForeignKey("Company", on_delete=models.CASCADE, related_name='pledges')
     article = models.CharField(max_length=50)
